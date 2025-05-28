@@ -2,25 +2,25 @@ using UnityEngine;
 
 public class CameraCollision : MonoBehaviour
 {
-    public Transform cameraPivot; // The point the camera orbits around (usually the player)
-    public float minDistance = 1f;  // How close the camera can get
-    public float maxDistance = 4f;  // How far the camera sits normally
+    public Transform cameraPivot; // Usually the player's head or upper body
+    public float minDistance = 1f;
+    public float maxDistance = 4f;
     public float smoothSpeed = 10f;
-    public LayerMask collisionLayers;
+    public LayerMask collisionLayers = ~0;
 
     private float currentDistance;
-    private Vector3 desiredCameraPos;
-    private Camera cam;
+    private Vector3 currentVelocity;
 
     void Start()
     {
-        cam = Camera.main;
         currentDistance = maxDistance;
     }
 
     void LateUpdate()
     {
-        desiredCameraPos = cameraPivot.position - transform.forward * maxDistance;
+        // Desired position based on max distance
+        Vector3 direction = (transform.position - cameraPivot.position).normalized;
+        Vector3 desiredCameraPos = cameraPivot.position + direction * maxDistance;
 
         RaycastHit hit;
         if (Physics.Linecast(cameraPivot.position, desiredCameraPos, out hit, collisionLayers))
@@ -32,7 +32,11 @@ public class CameraCollision : MonoBehaviour
             currentDistance = maxDistance;
         }
 
-        // Move camera to adjusted position
-        transform.position = Vector3.Lerp(transform.position, cameraPivot.position - transform.forward * currentDistance, Time.deltaTime * smoothSpeed);
+        // Smoothly move camera to new position
+        Vector3 finalPos = cameraPivot.position + direction * currentDistance;
+        transform.position = Vector3.SmoothDamp(transform.position, finalPos, ref currentVelocity, 1f / smoothSpeed);
+
+        // Optional: make camera look at the pivot
+        transform.LookAt(cameraPivot);
     }
 }
