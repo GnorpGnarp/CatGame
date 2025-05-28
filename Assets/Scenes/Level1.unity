@@ -1886,15 +1886,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 3
   sprintSpeed: 6
-  rotationSmoothTime: 0.1
-  jumpForce: 5
-  gravity: 9
+  rotationSpeed: 720
+  jumpHeight: 2
+  gravity: -9
   cameraTransform: {fileID: 752775547}
-  groundCheck: {fileID: 226746394}
-  groundDistance: 0.3
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 1
   animator: {fileID: 573767111}
 --- !u!1 &610576587 stripped
 GameObject:
